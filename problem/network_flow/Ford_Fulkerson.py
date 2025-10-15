@@ -11,7 +11,7 @@ def max_flow(C):
 	'''
 	
 	# make function to find path, given C_residual. DFS.
-	def search_path(C_residual):
+	def search_path():
 		def exists_path():
 			while stack:
 				# pop out a node as v
@@ -27,7 +27,7 @@ def max_flow(C):
 						elif edge[1] not in checked:
 							stack.append(edge[1])
 							parent[edge[1]] = v
-							checked.append(v)
+							checked.append(edge[1])
 			return None
 		# make a stack
 		stack = [0]
@@ -38,32 +38,31 @@ def max_flow(C):
 			# have parent, make path like [(0,2),(2,3),(3,1)]
 			# find parent[1], and add (parent[1],1) left of path
 			path = [(parent[1], 1)]
+			min_capacity = C_residual[path[0]]
 			v = path[0][0]
 			while v != 0:
-				#print(parent)
 				path.insert(0, (parent[v], v))
 				v = parent[v]
-			return path
+				if C_residual[path[0]] < min_capacity:
+					min_capacity = C_residual[path[0]]
+			return path, min_capacity
 		else:
-			return None
+			return None, None
 
 
 	flow = 0
 	C_residual = C.copy()
 	# with a path, make a residual graph
-	path = search_path(C_residual)
+	path, min_capacity = search_path()
 	while path:
-		# for every edge in the path capacity minus 1 until a capacity down to 0, record it and stop outer loop after this inner loop.
-		bottle_neck = False
-		while not bottle_neck:
-			for edge in path:
-				# for edge in path, C_residual[edge] -= 1.
-				C_residual[edge] -= 1
-				if C_residual[edge] == 0:
-					bottle_neck = True
-			flow += 1
+		# for every edge in the path capacity minus min_capacity. 
+		for edge in path:
+			# for edge in path, C_residual[edge] -= min_capacity.
+			C_residual[edge] -= min_capacity
+		flow += min_capacity
+
 		# find another path and repeat
-		path = search_path(C_residual)	
+		path, min_capacity = search_path()	
 			
 	return flow
 
