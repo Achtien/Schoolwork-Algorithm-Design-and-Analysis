@@ -58,7 +58,7 @@ def breadth_first_search_1(V):
 				if end == 1:
 					parent[end] = v
 					return 1
-				else:
+				elif end not in queue:
 					queue.append(end)
 					parent[end] = v
 		return
