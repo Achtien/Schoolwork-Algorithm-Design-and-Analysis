@@ -17,7 +17,6 @@ def max_flow(C):
 				# pop out a node as v
 				v = stack.pop()
 				# find all edges in C_residule that edge[0] = v and c != 0
-				edges = []
 				for edge in C_residual.keys():
 					if edge[0] == v and C_residual[edge] != 0:
 						# if edge[1] == 1(sink): link to v and return
@@ -25,22 +24,23 @@ def max_flow(C):
 							parent[edge[1]] = v
 							return 1
 						# else: add node edge[1] to stack and link to v.
-						else:
+						elif edge[1] not in checked:
 							stack.append(edge[1])
 							parent[edge[1]] = v
+							checked.append(v)
 			return None
 		# make a stack
 		stack = [0]
+		checked = [0]
 		# make a parent dictionary to record path
 		parent = {}
-
 		if exists_path():
 			# have parent, make path like [(0,2),(2,3),(3,1)]
 			# find parent[1], and add (parent[1],1) left of path
 			path = [(parent[1], 1)]
 			v = path[0][0]
 			while v != 0:
-				print(path)
+				#print(parent)
 				path.insert(0, (parent[v], v))
 				v = parent[v]
 			return path

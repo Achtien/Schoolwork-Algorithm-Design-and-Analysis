@@ -15,12 +15,13 @@ def depth_first_search(V):
 				if end == 1:
 					parent[end] = v
 					return 1
-				else:	
+				elif end not in checked:	
 					stack.append(end)
 					parent[end] = v
 		return
 			
 	parent = {}
+	checked = [0]
 	stack = [0]
 	if exist_path():
 		path = [1]
