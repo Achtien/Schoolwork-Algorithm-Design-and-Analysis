@@ -59,6 +59,13 @@ def max_flow(C):
 		for edge in path:
 			# for edge in path, C_residual[edge] -= min_capacity.
 			C_residual[edge] -= min_capacity
+			# if residual edges
+			residual_edge = (edge[1], edge[0])
+			try:
+				C_residual[residual_edge] = min_capacity
+			except:
+				C_residual[residual_edge] += min_capacity
+
 		flow += min_capacity
 
 		# find another path and repeat
