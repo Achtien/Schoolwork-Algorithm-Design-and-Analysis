@@ -1,3 +1,5 @@
+from collections import deque
+
 def breadth_first_search(E):
 	'''
 	Find the shortest path in directed graph with breadth-first-search.
@@ -53,22 +55,26 @@ def breadth_first_search_1(V):
 	'''
 	def exist_path():
 		while queue:
-			v = queue.pop(0)
+			v = queue.popleft()
 			for end in V[v]:
 				if end == 1:
 					parent[end] = v
 					return 1
-				elif end not in queue:
+				elif end not in checked:
 					queue.append(end)
+					checked.add(end)
 					parent[end] = v
 		return
 
 	parent = {}
-	queue = [0]
+	queue = deque()
+	queue.append(0)
+	checked = set([0])
 	if exist_path():
 		path = [1]
-		while path[0] != 0:
-			path.insert(0, parent[path[0]])
+		while path[-1] != 0:
+			path.append(parent[path[-1]])
+		path.reverse()
 		return path
 	else:
 		return
