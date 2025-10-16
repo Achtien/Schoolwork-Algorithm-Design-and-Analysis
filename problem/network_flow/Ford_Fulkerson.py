@@ -17,34 +17,37 @@ def max_flow(C):
 				# pop out a node as v
 				v = stack.pop()
 				# find all edges in C_residule that edge[0] = v and c != 0
-				for edge in C_residual.keys():
-					if edge[0] == v and C_residual[edge] != 0:
-						# if edge[1] == 1(sink): link to v and return
-						if edge[1] == 1:
-							parent[edge[1]] = v
-							return 1
-						# else: add node edge[1] to stack and link to v.
-						elif edge[1] not in checked:
-							stack.append(edge[1])
-							parent[edge[1]] = v
-							checked.append(edge[1])
-			return None
+				if v in adj_list:
+					for end in adj_list[v]:
+						edge = (v, end)	
+						if edge in C_residual:
+							if C_residual[edge] != 0:
+								# if edge[1] == sink: link to v and return
+								if end == 1:
+									parent[end] = v
+									return True
+								# else: add node to stack and link to v.
+								elif end not in checked:
+									stack.append(end)
+									parent[end] = v
+									checked.add(end)
+			return False
 		# make a stack
 		stack = [0]
-		checked = [0]
+		checked = {0}
 		# make a parent dictionary to record path
 		parent = {}
 		if exists_path():
-			# have parent, make path like [(0,2),(2,3),(3,1)]
-			# find parent[1], and add (parent[1],1) left of path
+			# have parent, make path like [(0,2),(2,3),(3,1)].reverse()
+			# find parent[1], and append (parent[1],1) to path
 			path = [(parent[1], 1)]
 			min_capacity = C_residual[path[0]]
 			v = path[0][0]
 			while v != 0:
-				path.insert(0, (parent[v], v))
+				path.append((parent[v], v))
 				v = parent[v]
-				if C_residual[path[0]] < min_capacity:
-					min_capacity = C_residual[path[0]]
+				if C_residual[path[-1]] < min_capacity:
+					min_capacity = C_residual[path[-1]]
 			return path, min_capacity
 		else:
 			return None, None
@@ -52,6 +55,17 @@ def max_flow(C):
 
 	flow = 0
 	C_residual = C.copy()
+
+	# make a adjacency list
+	adj_list = {}
+	for (u, v) in C_residual.keys():
+		if u not in adj_list:
+			adj_list[u] = []
+		if v not in adj_list:
+			adj_list[v] = []
+		adj_list[u].append(v)
+		adj_list[v].append(u)
+
 	# with a path, make a residual graph
 	path, min_capacity = search_path()
 	while path:
@@ -59,12 +73,11 @@ def max_flow(C):
 		for edge in path:
 			# for edge in path, C_residual[edge] -= min_capacity.
 			C_residual[edge] -= min_capacity
-			# if residual edges
+			# create residual edge.
 			residual_edge = (edge[1], edge[0])
-			try:
-				C_residual[residual_edge] = min_capacity
-			except:
-				C_residual[residual_edge] += min_capacity
+			if residual_edge not in C_residual:
+				C_residual[residual_edge] = 0
+			C_residual[residual_edge] += min_capacity
 
 		flow += min_capacity
 
