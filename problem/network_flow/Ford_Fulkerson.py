@@ -132,6 +132,15 @@ if __name__ == '__main__':
     (2, 3): 5,
     (3, 1): 5
 	}
+	capacities_9 = {
+	(0, 3): 1,
+	(0, 2): 1,
+	(2, 4): 1,
+	(2, 5): 1,
+	(4, 1): 1,
+	(3, 5): 1,
+	(5, 1): 1,
+	}
 	print(max_flow(test1))
 	print(max_flow(capacities_1))
 	print(max_flow(capacities_2))
@@ -141,5 +150,6 @@ if __name__ == '__main__':
 	print(max_flow(capacities_6))
 	print(max_flow(capacities_7))
 	print(max_flow(capacities_8))
+	print(max_flow(capacities_9))
 
 
